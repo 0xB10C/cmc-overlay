@@ -131,7 +131,6 @@
     function reCalc(){
         var amount = $("#amount").val();
         var coin = $("#select-coin").val();
-        console.log(data[coin]);
         $('#BTC').text((data[coin].price_btc*amount).toFixed(8));
         $('#USD').text((data[coin].price_usd*amount).toFixed(2));
         $('#RANK').text(data[coin].rank);
