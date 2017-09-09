@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <title>studious-octo-dollop</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <style>
+    body{
+        font-family: 'Open Sans', sans-serif !important;
+    }
+    .container {
+        display: block;
+        margin-left:auto;
+        margin-right:auto;
+    }
+    section{
+        width: 600px;
+        position: absolute;
+        top: 200px;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%);
+    }
+    .tabel-center{
+        width: 300px;
+        display: block;
+        margin-left:auto;
+        margin-right:auto;
+    }
+    .width-300 {
+        width: 300px !important;
+    }
+    .center-text{
+        text-align: center;
+    }
+    .select2{
+        width: 300px !important;
+    }
+    .footer {
+        position:fixed;
+        left:0px;
+        bottom:0px;
+        width:100%;
+        color: #777;
+    }
+    a {
+        color: #B10C00;
+    }
+    </style>
+
+</head>
+<body>
+    <section class="container">
+        <article class="verticalCenter">
+            <p class="center-text">
+                <select id="select-coin"></select>
+            </p>
+            <p class="center-text">
+                <input class="width-300 center-text" id="amount"  min="0" value="1">
+            </p>
+            <div>
+                <p class="center-text">
+                    <span id="BTC"></span><span> BTC</span>
+                </p>
+                <p class="center-text">
+                    <span></span><span id="USD">$</span>
+                </p>
+                <small>
+                    <table class="tabel-center" style="color: #666;">
+                        <tr>
+                            <td><span>Rank</span></td>
+                            <td><span id="RANK"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span>1h</span></td>
+                            <td><span id="PC1H"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span>24h</span></td>
+                            <td><span id="PC24H"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span>7d</span></td>
+                            <td><span id="PC7D"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span style="padding-right:25px;">Market Cap</span></td>
+                            <td><span id="MCAP"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span>Supply</span></td>
+                            <td><span id="SUP"></span></td>
+                        </tr>
+                        <tr>
+                            <td><span>Total Supply</span></td>
+                            <td><span id="TSUP"></span></td>
+                        </tr>
+                        <!-- see js below...
+                        <tr>
+                            <td><span>24h Volume:</span></td>
+                            <td><span id="VOL"></span></td>
+                        </tr>
+                        -->
+                    </table>
+                </small>
+            </div>
+        </article>
+    </section>
+    <div class="footer center-text">
+        <p>simple <a href="https://coinmarketcap.com/">coinmarketcap.com</a> API overlay.</p>
+        <p>pls cmc, don't start variables with numeric literals (<code>24h_volume_usd</code>)</p>
+        <p>by <a href="https://twitter.com/0xB10C">@0xB10C</a>.</p>
+    </div>
+    <script>
+    const TOP_COINS_TO_FETCH = 1000;
+    var data;
+
+    $("#amount").on("input", function (e) {
+        reCalc();
+    });
+    $("#select-coin").on("select2:select", function (e) {
+        reCalc();
+    });
+    function reCalc(){
+        var amount = $("#amount").val();
+        var coin = $("#select-coin").val();
+        console.log(data[coin]);
+        $('#BTC').text((data[coin].price_btc*amount).toFixed(8));
+        $('#USD').text((data[coin].price_usd*amount).toFixed(2));
+        $('#RANK').text(data[coin].rank);
+        $('#SUP').text(data[coin].available_supply+" "+data[coin].symbol);
+        $('#TSUP').text(data[coin].total_supply+" "+data[coin].symbol);
+        $('#MCAP').text(data[coin].market_cap_usd +" $");
+        $('#PC1H').text(data[coin].percent_change_1h +"%");
+        $('#PC24H').text(data[coin].percent_change_24h +"%");
+        $('#PC7D').text(data[coin].percent_change_7d +"%");
+        // $('#VOL').text(data[coin].24h_volume_usd); hmm cmc... starting variables with a numeric literal...
+    }
+
+
+    $(document).ready(function(){
+        $("#select-coin").select2({
+            placeholder: 'coin'
+        });
+        $.ajax({url: "https://api.coinmarketcap.com/v1/ticker/?limit=1000", success: function(result){
+            data = result;
+            $.each(result, function (i, item) {
+                $('#select-coin').append($('<option value="'+i+'">'+item.symbol+" "+item.name+'</option>'));
+            });
+            $("#select-coin").val(Math.ceil(Math.random()*TOP_COINS_TO_FETCH-1)+"").trigger("change");
+            reCalc();
+        }});
+    });
+
+
+    </script>
+</body>
+</html>
