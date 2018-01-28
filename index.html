@@ -3,7 +3,10 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <title>studious-octo-dollop</title>
+    <title>cmc-overlay</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
@@ -12,41 +15,64 @@
     body{
         font-family: 'Open Sans', sans-serif !important;
     }
+
     .container {
         display: block;
         margin-left:auto;
         margin-right:auto;
+        max-width: 500px;
+        padding: 2rem;
     }
-    section{
-        width: 600px;
-        position: absolute;
-        top: 200px;
-        left: 50%;
-        margin-right: -50%;
-        transform: translate(-50%, -50%);
+    .container-coin {
+        width: 100%;
     }
-    .tabel-center{
-        width: 300px;
-        display: block;
-        margin-left:auto;
-        margin-right:auto;
+
+    .flex-container {
+        width: 500px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    .width-300 {
-        width: 300px !important;
+
+    .value-input{
+        border: 0px solid white;
+        border-bottom: 1px solid #DDD;
+        width: 15ch;
+        margin-left: 5rem;
     }
+
+    .value-input:active{
+        border: 0px solid white;
+    }
+
+    .p-left{
+        padding-left: 5rem;
+    }
+
+    .bold{
+        font-weight: bold;
+    }
+
     .center-text{
         text-align: center;
     }
-    .select2{
-        width: 300px !important;
+
+    .select2-container--default .select2-selection--single{
+        border: 0px solid white;
+
+        border-radius: 0px;
+
     }
+
+    #select-coin{
+        width: 23rem;
+    }
+
     .footer {
-        position:fixed;
-        left:0px;
-        bottom:0px;
-        width:100%;
-        color: #777;
-        font-size: 0.7em;
+        display: block;
+        margin-left:auto;
+        margin-right:auto;
+        max-width: 500px;
     }
     a {
         color: #B10C00;
@@ -56,105 +82,146 @@
 </head>
 <body>
     <section class="container">
-        <article class="verticalCenter">
-            <p class="center-text">
-                <select id="select-coin"></select>
-            </p>
-            <p class="center-text">
-                <input class="width-300 center-text" id="amount"  min="0" value="1">
-            </p>
-            <div>
-                <p class="center-text">
-                    <span id="BTC"></span><span> BTC</span>
-                </p>
-                <p class="center-text">
-                    <span id="USD">$</span><span>$</span>
-                </p>
-                <small>
-                    <table class="tabel-center" style="color: #666;">
-                        <tr>
-                            <td><span>Rank</span></td>
-                            <td><span id="RANK"></span></td>
-                        </tr>
-                        <tr>
-                            <td><span>1h</span></td>
-                            <td><span id="PC1H"></span></td>
-                        </tr>
-                        <tr>
-                            <td><span>24h</span></td>
-                            <td><span id="PC24H"></span></td>
-                        </tr>
-                        <tr>
-                            <td><span>7d</span></td>
-                            <td><span id="PC7D"></span></td>
-                        </tr>
-                        <tr>
-                            <td><span style="padding-right:25px;">Market Cap</span></td>
-                            <td><span id="MCAP"></span></td>
-                        </tr>
-                        <tr>
-                            <td><span>Supply</span></td>
-                            <td><span id="SUP"></span></td>
-                        </tr>
-                        <tr>
-                            <td><span>Total Supply</span></td>
-                            <td><span id="TSUP"></span></td>
-                        </tr>
-                        <!-- see js below...
-                        <tr>
-                            <td><span>24h Volume:</span></td>
-                            <td><span id="VOL"></span></td>
-                        </tr>
-                        -->
-                    </table>
-                </small>
-            </div>
-        </article>
-    </section>
-    <div class="footer center-text">
-        <hr>
-        <span>simple <a href="https://coinmarketcap.com/">coinmarketcap.com</a> API overlay.</span><br>
-        <span>pls cmc, don't start variables with numeric literals (<code>24h_volume_usd</code>)</span><br>
-        <a href="bitcoin:1memoUrCooGaN1Qgv2KebFDRBrZTjREyY">1memoUrCooGaN1Qgv2KebFDRBrZTjREyY</a><br>
-        <span>by <a href="https://twitter.com/0xB10C">@0xB10C</a>.</p>
-    </div>
-    <script>
-    const TOP_COINS_TO_FETCH = 1000;
-    var data;
+        <article>
 
-    $("#amount").on("input", function (e) {
-        reCalc();
-    });
-    $("#select-coin").on("select2:select", function (e) {
-        reCalc();
-    });
-    function reCalc(){
-        var amount = $("#amount").val();
-        var coin = $("#select-coin").val();
-        $('#BTC').text((data[coin].price_btc*amount).toFixed(8));
-        $('#USD').text((data[coin].price_usd*amount).toFixed(2));
-        $('#RANK').text(data[coin].rank);
-        $('#SUP').text(data[coin].available_supply+" "+data[coin].symbol);
-        $('#TSUP').text(data[coin].total_supply+" "+data[coin].symbol);
-        $('#MCAP').text(data[coin].market_cap_usd +" $");
-        $('#PC1H').text(data[coin].percent_change_1h +"%");
-        $('#PC24H').text(data[coin].percent_change_24h +"%");
-        $('#PC7D').text(data[coin].percent_change_7d +"%");
+
+            <div class="container-coin">
+                <h2><select id="select-coin"  class="p-left"></select></h2>
+            </div>
+
+            <hr>
+
+
+            <table>
+                <tr>
+                    <td><span id="coinsymbol" class="bold">SYM</span></td>
+                    <td><input class="value-input" id="value-coin" min="0" value="1"></td>
+                </tr>
+                <tr>
+                    <td class="bold">USD</td>
+                    <td><input class="value-input"  id="value-fiat" min="0" value="1"></td>
+                </tr>
+                <tr>
+                    <td class="bold">BTC</td>
+                    <td><input class="value-input" id="value-btc" min="0" value="1"></td>
+                </tr>
+
+                <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+
+                <tr>
+                    <td><span class="bold">RANK</span></td>
+                    <td class="p-left"><span id="RANK"></span></td>
+                </tr>
+                <tr class="small-gray">
+                    <td><span class="bold">CHANGE 1D</span></td>
+                    <td class="p-left"><span id="PC1H"></span></td>
+                </tr>
+                <tr class="small-gray">
+                    <td><span class="bold">CHANGE 24H</span></td>
+                    <td class="p-left"><span id="PC24H"></span></td>
+                </tr>
+                <tr class="small-gray">
+                    <td><span class="bold">CHANGE 7D</span></td>
+                    <td class="p-left"><span id="PC7D"></span></td>
+                </tr>
+                <tr class="small-gray">
+                    <td><span class="bold">MARKET CAP</span></td>
+                    <td class="p-left"><span id="MCAP"></span></td>
+                </tr>
+                <tr class="small-gray">
+                    <td><span class="bold">AVAILABLE SUPPLY</span></td>
+                    <td class="p-left"><span id="SUP"></span></td>
+                </tr>
+                <tr class="small-gray">
+                    <td><span class="bold">TOTAL SUPPLY</span></td>
+                    <td class="p-left"><span id="TSUP"></span></td>
+                </tr>
+            </table>
+            <hr>
+        </article>
+        <div class="footer">
+            <small>
+                <span>a simple <a href="https://coinmarketcap.com/">coinmarketcap.com</a> overlay</span><br>
+                <span>by <a href="https://twitter.com/0xB10C">@0xb10c</a> or <a href="https://b10c.me">b10c.me</a></span>
+            </small>
+        </div>
+    </section>
+    <script>
+
+    const TOP_COINS_TO_FETCH = 1000;
+
+    let data;
+    let btcprice = 0;
+
+    $("#value-btc").on("input", function (e) {reCalc("btc");});
+    $("#value-fiat").on("input", function (e) {reCalc("fiat");});
+    $("#value-coin").on("input", function (e) {reCalc("coin");});
+    $("#select-coin").on("select2:select", function (e) {reCalc("coin");});
+
+    function reCalc(valueChanged){
+
+        console.log("Changed", valueChanged);
+
+        let btc   =  $("#value-btc").val();
+        let fiat  =  $("#value-fiat").val();
+        let coin  =  $("#value-coin").val();
+
+        let selectedcoin = $("#select-coin").val();
+
+        switch (valueChanged) {
+            case "coin":
+                $('#value-btc').val((data[selectedcoin].price_btc   * coin).toFixed(8));
+                $('#value-fiat').val((data[selectedcoin].price_usd  * coin).toFixed(2));
+                break;
+
+            case "fiat":
+                $('#value-coin').val((fiat / data[selectedcoin].price_usd).toFixed(8));
+                $('#value-btc').val((fiat / btcprice).toFixed(8));
+                break;
+
+            case "btc":
+                $('#value-coin').val((btc / data[selectedcoin].price_btc).toFixed(8));
+                $('#value-fiat').val((btcprice * btc).toFixed(2));
+                break;
+
+        }
+
+
+        $('#coinsymbol').text(data[selectedcoin].symbol)
+        $('#RANK').text(data[selectedcoin].rank);
+        $('#SUP').text(data[selectedcoin].available_supply + " " + data[selectedcoin].symbol);
+        $('#TSUP').text(data[selectedcoin].total_supply + " " + data[selectedcoin].symbol);
+        $('#MCAP').text(data[selectedcoin].market_cap_usd +" USD");
+        $('#PC1H').text(data[selectedcoin].percent_change_1h +"%");
+        $('#PC24H').text(data[selectedcoin].percent_change_24h +"%");
+        $('#PC7D').text(data[selectedcoin].percent_change_7d +"%");
         // $('#VOL').text(data[coin].24h_volume_usd); hmm cmc... starting variables with a numeric literal...
     }
 
 
     $(document).ready(function(){
+
         $("#select-coin").select2({
             placeholder: 'coin'
         });
+
         $.ajax({url: "https://api.coinmarketcap.com/v1/ticker/?limit=1000", success: function(result){
+
             data = result;
+
             $.each(result, function (i, item) {
+
+                if (item.symbol == "BTC") {
+                    btcprice = item.price_usd;
+                }
+
                 $('#select-coin').append($('<option value="'+i+'">'+item.symbol+" "+item.name+'</option>'));
+
             });
+
             $("#select-coin").val(Math.ceil(Math.random()*TOP_COINS_TO_FETCH-1)+"").trigger("change");
-            reCalc();
+
+            reCalc("coin");
         }});
     });
     </script>

@@ -1,5 +1,3 @@
-# studious-octo-dollop
+# cmc-overlay
 
-simple https://coinmarketcap.com/ API overlay.
-
-name to be changed
+A simple https://coinmarketcap.com/ overlay to with coin conversion.
