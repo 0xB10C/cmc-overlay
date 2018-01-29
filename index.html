@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=500, initial-scale=1">
+    <meta name="viewport" content="width=500, initial-scale=1, user-scalable=0">
     <meta charset="utf-8">
     <title>cmc-overlay</title>
 
@@ -13,20 +13,19 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <style>
 
-
     .container {
         display: block;
         margin-left:auto;
         margin-right:auto;
-        max-width: 500px;
-        padding: 2rem;
+        max-width: 360px;
+        padding-top: 2rem;
     }
-
 
     .select2-container--default .select2-selection--single{
         border: 0px solid white;
         border-radius: 0px;
     }
+
     .select2-container .select2-selection--single .select2-selection__rendered{
         font-size: 25px !important;
         font-weight: bold !important;
@@ -46,12 +45,12 @@
         width: 100%;
     }
 
-
     footer {
         background-color: inherit;
         color: black;
         border-top:  0.0625rem solid #EEE !important;
     }
+
     a {
         color: #B10C00 !important;
     }
@@ -59,9 +58,6 @@
 
 </head>
 <body>
-
-
-
     <div class="container">
 
         <div class="row">
@@ -69,7 +65,9 @@
                 <select id="select-coin"></select>
             </div>
         </div>
+
         <br>
+
         <div class="row">
             <div class="col-sm-4">
                 <label id="coinsymbol" >SYM</label>
@@ -94,7 +92,9 @@
                 <input class="value-input" id="value-btc" min="0" value="1">
             </div>
         </div>
+
         <br>
+
         <div class="row">
             <div class="col-sm-4">
                 <label>#</label>
@@ -158,7 +158,6 @@
     </div>
 
     <script>
-
     const TOP_COINS_TO_FETCH = 1000;
 
     let data;
